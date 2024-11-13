@@ -3,6 +3,7 @@
 	import { hexCodeToShorts } from './y84_ops.js';
 	import type { Y84Emulator } from './Y84Emulator.svelte.js';
 	import { onMount } from 'svelte';
+	import HBox from '$lib/components/HBox.svelte';
 
 	let { y84 }: { y84: Y84Emulator } = $props();
 	let code = $state(`// data seg
@@ -257,21 +258,46 @@ PC << emptyC`);
 		let instShorts = hexCodeToShorts(inst.join('\n'));
 		let dataShorts = data?.length ? Int16Array.from(hexCodeToShorts(data.join('\n'))?.inst ?? []) : undefined;
 		if (instShorts) {
-			y84.load(instShorts.inst, dataShorts);
+			y84.load(instShorts.inst, dataShorts, code, sourceMap);
 		}
 	}
 
 	onMount(oninput);
+
+	let lineNumbers = $derived(Array.from(code.matchAll(/\n/g), (_, i) => ` ${i+1}`.padStart(4, ' ')).join('\n'));
+
+	let onscroll = () => {
+		document.getElementsByClassName("lineNumbers").item(0)!.scrollTop = document.getElementsByClassName("code").item(0)!.scrollTop;
+	}
 </script>
 
 <style>
+		textarea {
+				font-family: --font-mono;
+				font-size: 16pt;
+		}
     .code {
         display: block;
         height: 516px;
-        width: 800px;
+				width: 800px;
         min-width: 300px;
+				max-width: 800px;
         resize: none;
     }
+		.lineNumbers {
+				height: 516px;
+				width: 40px;
+				overflow: hidden;
+				resize: none;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+				user-select: none;
+				background-color: lightgray;
+		}
 </style>
 
-<textarea class="code" bind:value={code} {oninput}></textarea>
+<HBox>
+	<textarea disabled class="lineNumbers" value={lineNumbers}></textarea>
+	<textarea bind:value={code} class="code" {onscroll} {oninput} wrap="off"></textarea>
+</HBox>

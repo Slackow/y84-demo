@@ -17,6 +17,7 @@
     .console {
         resize: none;
         height: 100px;
+				background-color: lightgray;
     }
 </style>
 

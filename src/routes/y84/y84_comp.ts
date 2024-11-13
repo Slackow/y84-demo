@@ -109,11 +109,15 @@ function process(lines: string[]): [Record<string, number[]>, number[], number[]
 			const [dst, src] = line.split('=').map((s) => s.trim());
 
 			if (src in regs) {
-				// Handle aliases
+				// Handle aliases (:=)
 				regs[dst.slice(0, -1).trim()] = regs[src];
 			} else if (dst.includes('[')) {
-				const [base, offset] = dst.split('[').map((s) => s.trim());
-				data[base][parseInt(offset) + 1] = getNum(src) ?? 0;
+				let [base, offset] = dst.split('[').map((s) => s.trim());
+				offset = offset.slice(0, -1).trim();
+				let num = getNum(src);
+				let offsetNum = getNum(offset);
+				if (num == null || offsetNum == null) throw new Error("Invalid number");
+				data[base][offsetNum + 1] = num;
 			} else {
 				const val = [memLoc];
 				const intervals = src.split(',');
@@ -121,17 +125,25 @@ function process(lines: string[]): [Record<string, number[]>, number[], number[]
 
 				for (const interval of intervals) {
 					const trimmed = interval.trim();
-					if (trimmed.startsWith('[')) {
-						val.push(...Array(getNum(trimmed.slice(1, -1)) ?? 0).fill(0));
-					} else if (inStr.length || trimmed.startsWith('"')) {
+					if (inStr.length || trimmed.startsWith('"')) {
 						inStr.push(interval);
 						if (trimmed.endsWith('"')) {
-							const lit: string[] = safeEval('[' + inStr.join(',') + ']');
-							val.push(...Array.from(lit).map((char: string) => char.charCodeAt(0)));
+							const lit: string = safeEval(inStr.join(','));
+							val.push(...Array.from(lit, (char) => char.charCodeAt(0)));
 							inStr = [];
 						}
+					} else if (trimmed.startsWith('[') && trimmed.endsWith(']')) {
+						let num = getNum(trimmed.slice(1, -1));
+						if (num == null) {
+							throw new Error("Invalid length");
+						}
+						val.push(...Array(num).fill(0));
 					} else {
-						val.push(getNum(trimmed) ?? 0);
+						let num = getNum(trimmed);
+						if (num == null) {
+							throw new Error("Unrecognized data");
+						}
+						val.push(num);
 					}
 				}
 				memLoc += val.length - 1;
@@ -144,43 +156,33 @@ function process(lines: string[]): [Record<string, number[]>, number[], number[]
 
 			if (dst === 'PC' || dst === 'PC@') {
 				let offset = null;
+				let label;
 				inst.push(0b1000);
 
 				if (!src.includes('?')) {
 					inst.push(0xf);
-					inst[0] |= (dst === 'PC@' ? 1 : 0) << 1;
-					const label = src;
-
-					if (label === 'PC') {
-						offset = 0;
-					} else if (label in regs) {
-						inst[0] |= 1;
-						inst.push(regs[label], regs[label]);
-					} else {
-						offset = label in labels ? labels[label] - program.length : 0;
-						if (!(label in labels)) {
-							(toResolve[label] = toResolve[label] || []).push(program.length);
-						}
-					}
+					inst[0] |= dst === 'PC@' ? 2 : 0;
+					label = src;
 				} else {
 					if (dst === 'PC@') {
-						throw new Error(`Conditional branch with link: ${line}`);
+						throw new Error('Conditional branch with link');
 					}
 					const parts = src.split(/\?[>=]0/);
-					const [cond, label] = parts.map((s) => s.trim());
+					let cond;
+					[cond, label] = parts.map((s) => s.trim());
 					inst.push(regs[cond]);
-					inst[0] |= (src.includes('?>0') ? 1 : 0) << 1;
+					inst[0] |= src.includes('?>0') ? 2 : 0;
+				}
 
-					if (label === 'PC') {
-						offset = 0;
-					} else if (label in regs) {
-						inst[0] |= 1;
-						inst.push(regs[label], regs[label]);
-					} else {
-						offset = label in labels ? labels[label] - program.length : 0;
-						if (!(label in labels)) {
-							(toResolve[label] = toResolve[label] || []).push(program.length);
-						}
+				if (label === 'PC') {
+					offset = 0;
+				} else if (label in regs) {
+					inst[0] |= 1;
+					inst.push(regs[label], regs[label]);
+				} else {
+					offset = label in labels ? labels[label] - program.length : 0;
+					if (!(label in labels)) {
+						(toResolve[label] = toResolve[label] || []).push(program.length);
 					}
 				}
 				if (offset !== null) {
@@ -278,9 +280,11 @@ function processAssembly(sourceCode: string): {
 
 	const inst = toFile(rawProgram);
 
+	console.log("raw", rawData);
 	const numericalData = Object.values(rawData)
 		.flatMap((val) => val.slice(1))
 		.map((num) => num & 0xffff);
+	console.log("num", numericalData);
 
 	const data = numericalData.some((x) => x !== 0) ? toFile(numericalData) : [];
 

@@ -8,6 +8,7 @@
 	import VBox from '$lib/components/VBox.svelte';
 	import Y84CodeArea from './Y84CodeArea.svelte';
 	import Y84Inst from './Y84Inst.svelte';
+	import Y84Regs from './Y84Regs.svelte';
 
 	let { data } = $props();
 
@@ -70,6 +71,7 @@
 				<Y84Console {y84} />
 				<Y84Screen {y84} />
 			</VBox>
+			<Y84Regs {y84} />
 		</HBox>
 	</VBox>
 </div>

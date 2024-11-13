@@ -25,7 +25,10 @@ export class Y84Emulator {
 
 	public console = $state('');
 
-	public screen = $state(Array.from(Array(64), () => 0));
+	public source = $state('');
+	public sourceMap: number[] = $state([]);
+
+	public screen = $state(Array(64).fill(0));
 	private keyboard: number[] = [];
 
 	private nextKey(): number {
@@ -151,12 +154,12 @@ export class Y84Emulator {
 		this.isHalted = !this.isHalted;
 	}
 
-	public load(program: Uint16Array, data?: Int16Array) {
+	public load(program: Uint16Array, data?: Int16Array, source?: string, sourceMap?: number[]) {
 		this.reset();
 		this.instMem = program;
-		if (data != undefined) {
-			this.dataMem = data;
-		}
+		this.dataMem = data ?? new Int16Array(65536);
+		this.sourceMap = sourceMap ?? [];
+		this.source = source ?? '';
 		console.log('Reset');
 		this.resume();
 	}
@@ -167,5 +170,13 @@ export class Y84Emulator {
 
 	public reload() {
 		this.load(new Uint16Array(this.instMem));
+	}
+
+	public getRegs() {
+		return this.regs;
+	}
+
+	public getPC() {
+		return this.PC;
 	}
 }
