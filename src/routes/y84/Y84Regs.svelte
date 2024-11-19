@@ -14,14 +14,17 @@
 
 <style>
 	.main {
-      height: 516px;
+      height: 500px;
+      width: 100px;
+			white-space: pre;
+			padding-left: 5px;
 	}
 </style>
 
 <div class="main">
-	PC: {y84.isHalted ? `0x${y84.getPC().toString(16)}` : '---'}<br>
-	{y84.isHalted ? y84.source.split('\n')[(y84.sourceMap[y84.getPC()] ?? 0) - 1] : '---'}<br><br>
+	PC: {y84.isHalted ? `${y84.getPC()}` : '---'}<br>
+	{y84.isHalted ? y84.source.split('\n')[(y84.sourceMap[y84.getPC()] ?? 0) - 1] : '---'}<br>
 	{#each regs.entries() as [i, reg] (i)}
-		{labels[i]}: {reg}, 0x{(reg & 65535).toString(16).toUpperCase()}, '{String.fromCharCode(reg)}'<br>
+		<br>{labels[i]}: {reg}, 0x{(reg & 65535).toString(16).toUpperCase()}, '{String.fromCharCode(reg)}'
 	{/each}
 </div>

@@ -1,4 +1,11 @@
 
+// A Calculator that handles
+// unsigned 16-bit multiplication
+// simply type the problem in
+// ex: 123*8\n => 984
+// click the console or canvas to type
+
+
 ten := R10
 mult := R9
 zero := R11

@@ -54,7 +54,7 @@
     }
 
     .textInstruction {
-        font-family: --font-mono monospace;
+        font-family: var(--font-mono);
     }
 </style>
 

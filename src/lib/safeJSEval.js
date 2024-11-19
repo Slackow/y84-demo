@@ -1,4 +1,9 @@
-function safeEval(untrustedCode)
+/**
+ * Source: Stackoverflow
+ * @param {string} untrustedCode
+ * @return {Promise<any>}
+ */
+export function safeJSEval(untrustedCode)
 {
 	return new Promise(function (resolve, reject)
 	{
@@ -8,7 +13,7 @@ function safeEval(untrustedCode)
 				{
 					var _postMessage = postMessage;
 					var _addEventListener = addEventListener;
-
+					// @ts-ignore
 					(function (obj)
 					{
 						"use strict";
@@ -21,7 +26,7 @@ function safeEval(untrustedCode)
 								// Optional, but trivial to get back
 								'Array', 'Boolean', 'Number', 'String', 'Symbol',
 								// Optional
-								'Map', 'Math', 'Set',
+								'Math',
 							];
 
 						do
@@ -38,7 +43,7 @@ function safeEval(untrustedCode)
 						}
 						while (current !== Object.prototype)
 							;
-
+						/** @ts-ignore */
 					})(this);
 
 					_addEventListener("message", function (e)

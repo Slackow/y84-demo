@@ -1,3 +1,6 @@
+import { processAssembly } from './y84_comp';
+import { hexCodeToShorts } from './y84_ops';
+
 const LR = 0xE;
 const ZR = 0xF;
 
@@ -168,8 +171,13 @@ export class Y84Emulator {
 		return this.instMem[this.PC];
 	}
 
-	public reload() {
-		this.load(new Uint16Array(this.instMem));
+	public async reload() {
+		let {inst, data} = await processAssembly(this.source);
+		let instH = hexCodeToShorts(inst.join("\n"))?.inst;
+		let dataH = hexCodeToShorts(data.join("\n"))?.inst;
+		console.log(instH, dataH);
+		if (instH == null) return;
+		this.load(instH, dataH && new Int16Array(dataH), this.source, this.sourceMap);
 	}
 
 	public getRegs() {

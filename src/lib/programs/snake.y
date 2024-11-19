@@ -1,3 +1,11 @@
+
+// This is snake, being emulated in my CPU,
+// The code that defines this program is all below
+// - Controls are WASD to move (click the canvas)
+// - Score is printed in base 10 after death
+// - If you get >=15 points, you get a smily face
+// - The board loops around
+
 // data seg
 dataD = [64]    // node position list
 dataCD = [64]   // table list
@@ -67,15 +75,16 @@ VR << cin
 
 PC << VR ?=0 noPress
 VR << keys[VR]   // newDelta
+PC << VR ?=0 noPress
 VR << R6 + VR
 PC << VR ?=0 noPress // if newDelta cancels out then ignore
 R6 << VR - R6
 noPress:
 
 VR << 40
-delay60: // delay by 60 instructions (at 8kHz = 9.7ms)
+delay40: // delay by 40 instructions (40ms)
 VR << VR - one
-PC << VR ?>0 delay60
+PC << VR ?>0 delay40
 VR << head - apple        // if apple found, jump to mmm
 PC << VR ?=0 mmm
 
@@ -112,7 +121,7 @@ idx << idx - length
 PC << idx ?=0 loop
 idx << idx + length
 PC << loop
-exit: // everything beyond handles losing/reseting the game for the next play
+exit: // everything beyond handles losing/resetting the game for the next play
 
 // remove snake
 R7 << -1
@@ -232,7 +241,7 @@ screen << VR
 VR << 21
 screen << VR
 // clear terminal
-VR << ('\14')
+VR << ('\x0C')
 cout << VR
 
 apple << 0
@@ -243,3 +252,13 @@ VR << VR - one
 dataC[VR] << ZR
 PC << VR ?=0 ZR // to top if done
 PC << emptyC
+
+/// # I made snake in assembly language
+///
+/// The snakes movement and position is tracked with 2 arrays.
+/// One array holds the spaces occupied by the snake as a list of numbers
+/// The other is an array of length 64, containing 0 or 1 for if that space is occupied or not.
+/// The first array is a rolling buffer, there's an additional number stored for the starting position
+/// of the array, this gets incremented on each move, and the tail is replaced at the same time the new head position is added
+/// the second array simply exists to be a quick lookup for if the next space is occupied or not
+/// Here's a visual representation of how the rolling buffer works:
