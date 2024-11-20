@@ -1,3 +1,6 @@
+// Prints Square Numbers
+// Limited by 16-bit
+
 zero := R9
 one := R11
 ten := R10
@@ -8,6 +11,8 @@ ten << 10
 R6 << 0
 R7 << 1
 R8 << 2
+VR << 256
+R5 << VR
 
 loop:
 R0 << R6
@@ -16,6 +21,8 @@ R7 << R7 + R8
 PC@ << printNum
 VR << (' ')
 cout << VR
+R5 << R5 - one
+PC << R5 ?=0 PC
 PC << loop
 
 
@@ -25,7 +32,7 @@ SP << SP - one
 SP[ZR] << ZR
 cont:
 R1 << R0 / ten
-R2 << R1 * ten
+R2 << R1 * ten // the only multiplication, and it's for displaying, not
 R2 << R0 - R2 // isolate digit (R0 % 10) = (R0 - (R0 / 10) * 10)
 R2 << R2 + zero // + '0'
 SP << SP - one

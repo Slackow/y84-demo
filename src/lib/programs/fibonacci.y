@@ -1,3 +1,6 @@
+// Prints the Fibonaccis
+// Limited by 16-bit
+
 zero := R9
 ten := R10
 one := R11
@@ -5,6 +8,7 @@ one := R11
 R0 << 0
 R1 << 1
 one << 1
+R8 << 24
 loop:
 R2 << R0 + R1
 R0 << R1
@@ -25,6 +29,8 @@ R0 << SP[ZR]
 SP << SP + one
 VR << (' ')
 cout << VR
+R8 << R8 - one
+PC << R8 ?=0 PC
 PC << loop
 
 

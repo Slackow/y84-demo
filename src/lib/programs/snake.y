@@ -3,13 +3,20 @@
 // The code that defines this program is all below
 // - Controls are WASD to move (click the canvas)
 // - Score is printed in base 10 after death
-// - If you get >=15 points, you get a smily face
+// - If you get >=15 points, you get a smiley face
 // - The board loops around
 
 // data seg
+message = "\n\n Score: \0"
+message2 = "\n Press any key to restart\0"
 dataD = [64]    // node position list
 dataCD = [64]   // table list
 keysD = [26]
+keysD[('a'-'a')] = 1
+keysD[('d'-'a')] = -1
+keysD[('s'-'a')] = 8
+keysD[('w'-'a')] = -8
+
 // aliases
 keys := R0
 data := R9
@@ -21,24 +28,13 @@ apple := R2
 sixty_four := R7
 idx := R5
 
-// init
+// init (text segment)
 VR << &keysD
 keys << VR        // R0 = keys
 VR << &dataD
 data << VR        // R9 = data
 VR << &dataCD
 dataC << VR        // R8 = dataC
-VR << 1
-keys[ZR] << VR    // keys['a'] = 1
-VR << -1
-R1 << ('d' - 'a')
-keys[R1] << VR    // keys['d'] = -1
-VR << 8
-R1 << ('s' - 'a')
-keys[R1] << VR    // keys['s'] = 8
-VR << -8
-R1 << ('w' - 'a')
-keys[R1] << VR    // key['w'] = -8
 VR << ('a')
 keys << keys - VR   // tweak R0 to avoid subtraction
 
@@ -52,6 +48,7 @@ length << 0
 idx << 0
 R6 << 1
 screen << ZR
+
 mmm:
 length << length + one  // increment length
 screen << apple
@@ -65,8 +62,8 @@ VR << R4 - one
 VR << data[VR]
 data[R4] << VR
 R4 << R4 - one
-
 PC << shift
+
 shiftBr:
 data[idx] << apple
 dataC[apple] << ZR
@@ -82,9 +79,9 @@ R6 << VR - R6
 noPress:
 
 VR << 40
-delay40: // delay by 40 instructions (40ms)
+delay80: // delay by 80 instructions (80ms)
 VR << VR - one
-PC << VR ?>0 delay40
+PC << VR ?>0 delay80
 VR << head - apple        // if apple found, jump to mmm
 PC << VR ?=0 mmm
 
@@ -150,27 +147,9 @@ PC << R7 ?=0 removeLoop // loop again
 screen << apple
 
 // output num (final score)
-VR << ('\n')
-cout << VR
-cout << VR
-cout << VR
-VR << (' ')
-cout << VR
-cout << VR
-VR << ('S')
-cout << VR
-VR << ('c')
-cout << VR
-VR << ('o')
-cout << VR
-VR << ('r')
-cout << VR
-VR << ('e')
-cout << VR
-VR << (':')
-cout << VR
-VR << (' ')
-cout << VR
+VR << &message
+R0 << VR
+PC@ << printMsg
 
 R5 << 10
 R2 << length / R5       // top digit
@@ -180,9 +159,13 @@ PC << R2 ?=0 skipTopDig // skip printing top digit if 0
 R2 << R2 + R5
 cout << R2              // print top digit
 skipTopDig:
-R4 << R1 - R4           // xy -> y
+R4 << R1 - R4           // xy - x0 -> y
 R4 << R4 + R5
 cout << R4              // print bottom digit
+
+VR << &message2
+R0 << VR
+PC@ << printMsg
 
 // clear key buffer
 clearBuffer:
@@ -200,6 +183,7 @@ screen << VR
 R0 << 14
 VR << length - R0
 PC << VR ?>0 smile
+
 frown:
 VR << 45
 screen << VR
@@ -253,12 +237,26 @@ dataC[VR] << ZR
 PC << VR ?=0 ZR // to top if done
 PC << emptyC
 
+// printMsg method, prints R0 as string
+printMsg:
+R2 << R0[ZR]
+PC << R2 ?=0 LR // return if reached '\0'
+cout << R2
+R0 << R0 + one
+PC << printMsg // tail recursion
+
 /// # I made snake in assembly language
 ///
-/// The snakes movement and position is tracked with 2 arrays.
-/// One array holds the spaces occupied by the snake as a list of numbers
-/// The other is an array of length 64, containing 0 or 1 for if that space is occupied or not.
-/// The first array is a rolling buffer, there's an additional number stored for the starting position
-/// of the array, this gets incremented on each move, and the tail is replaced at the same time the new head position is added
-/// the second array simply exists to be a quick lookup for if the next space is occupied or not
-/// Here's a visual representation of how the rolling buffer works:
+/// The snakes movement and position is tracked with
+/// 2 arrays.
+/// One array holds the spaces occupied by the snake
+/// as a list of numbers
+/// The other is an array of length 64, containing
+/// 0 or 1 for if that space is occupied or not.
+/// The first array is a rolling buffer, there's
+/// an additional number stored for the starting position
+/// of the array, this gets incremented on each move,
+/// and the tail is replaced at the same time the new head position is added
+/// the second array simply exists to be a quick lookup
+/// for if the next space is occupied or not.
+/// This ensures that snake length does not impact the speed of the game

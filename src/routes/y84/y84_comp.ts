@@ -38,8 +38,8 @@ async function getNum(sub: string): Promise<number | null> {
 			return null;
 		}
 	}
-	const num = parseInt(sub);
-	return isNaN(num) ? null : num;
+	const num = +sub;
+	return isNaN(num) || !sub ? null : num;
 }
 
 async function process(lines: string[]): Promise<[Record<string, number[]>, number[], number[]]> {

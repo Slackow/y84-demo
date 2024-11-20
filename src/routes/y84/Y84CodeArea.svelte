@@ -1,20 +1,13 @@
 <script lang="ts">
-	import { processAssembly } from './y84_comp.js';
-	import { hexCodeToShorts } from './y84_ops.js';
 	import type { Y84Emulator } from './Y84Emulator.svelte.js';
 	import HBox from '$lib/components/HBox.svelte';
 	import Y84Error from './Y84Error';
 
-	let { y84, code, onErr, small = false }: { y84: Y84Emulator, code: string, onErr: (err: Y84Error | null) => void, small?: boolean } = $props();
+	let { y84, code = $bindable(), onErr, small = false }: { y84: Y84Emulator, code: string, onErr: (err: Y84Error | null) => void, small?: boolean } = $props();
 
 	async function oninput() {
 		try {
-			let { inst, data, sourceMap } = await processAssembly(code);
-			let instShorts = hexCodeToShorts(inst.join('\n'));
-			let dataShorts = data?.length ? Int16Array.from(hexCodeToShorts(data.join('\n'))?.inst ?? []) : undefined;
-			if (instShorts) {
-				y84.load(instShorts.inst, dataShorts, code, sourceMap);
-			}
+			await y84.loadCode(code);
 			onErr(null);
 		} catch (error: any) {
 			if (!(error instanceof Y84Error)) {
@@ -24,7 +17,7 @@
 		}
 	}
 
-	let lineNumbersText = $derived(Array.from(code.matchAll(/\n|$/g), (_, i) => `${i + 1}`).join('\n'));
+	let lineNumbersText = $derived(Array.from(code.matchAll(/\n|$/g), (_, i) => i + 1).join('\n'));
 
 	let lineNumbers: HTMLElement, codeArea: HTMLElement;
 

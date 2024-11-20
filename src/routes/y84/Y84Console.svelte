@@ -28,4 +28,4 @@
     }
 </style>
 
-<textarea bind:value={y84.console} bind:this={consoleEl} readonly name="console" class="console" title="Console" tabindex="0" {onkeydown}></textarea>
+<textarea bind:this={consoleEl} readonly name="console" class="console" title="Console" tabindex="0" {onkeydown}>{y84.console}{y84.isHalted ? '' : '|'}</textarea>

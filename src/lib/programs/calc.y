@@ -12,15 +12,6 @@ zero := R11
 newline := R8
 one := R6
 
-
-//R0 << top(4532)
-//R0 << bot(4532)
-//one << 1
-//SP << ZR - one
-//zero << ('0')
-//ten << 10
-//PC@ << printNum
-
 R1 << ('>')
 cout << R1
 R1 << (' ')

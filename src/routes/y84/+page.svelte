@@ -14,12 +14,19 @@
 	import type Y84Error from './Y84Error';
 	import { onMount } from 'svelte';
 	import Y84Faq from './Y84Faq.svelte';
+	import { downloadData } from '$lib';
+	import Modal from '$lib/components/Modal.svelte';
 
 	let { data } = $props();
 
 	let y84 = new Y84Emulator();
 	let code = $state('');
 	let error: Y84Error | null = $state(null);
+	let speed = $state(20);
+	let showDownloadModal = $state(false);
+	let showImportModal = $state(false);
+	let fileName = $state('');
+	let importFile: HTMLInputElement = $state()!;
 
 	$effect(() => {
 		let id = setInterval(() => {
@@ -28,7 +35,7 @@
 			y84.tick();y84.tick();y84.tick();y84.tick();y84.tick();
 			y84.tick();y84.tick();y84.tick();y84.tick();y84.tick();
 			y84.tick();y84.tick();y84.tick();y84.tick();y84.tick();
-		}, 20);
+		}, speed);
 		return () => clearInterval(id);
 	});
 	let instruction = $state(0);
@@ -39,13 +46,10 @@
 	});
 
 	async function onpick(e: { currentTarget: { value: string } }) {
+		fileName = e.currentTarget.value;
 		code = data.files.find(f => f.name === e.currentTarget.value)?.content ?? '';
-		let { inst, data: dataSeg, sourceMap } = await processAssembly(code);
-		let instShorts = hexCodeToShorts(inst.join('\n'));
-		let dataShorts = dataSeg?.length ? Int16Array.from(hexCodeToShorts(dataSeg.join('\n'))?.inst ?? []) : undefined;
-		if (instShorts) {
-			y84.load(instShorts.inst, dataShorts, code, sourceMap);
-		}
+		await y84.loadCode(code);
+		error = null;
 	}
 
 	onMount(() => {
@@ -109,13 +113,13 @@
 				display: flex;
 		}
 
-    @media all and (max-width: 1240px) {
+    @media all and (max-width: 1230px) {
 				.full-code-area {
 						column-count: 1;
 						flex-direction: column-reverse;
 				}
 				.code-area {
-						width: 450px;
+						width: 400px;
 				}
 				.y84-regs {
 						display: none;
@@ -125,6 +129,10 @@
 		.lower {
         padding: 10px;
 				margin-right: 10%;
+		}
+
+		.hide {
+				display: none;
 		}
 
 </style>
@@ -138,10 +146,11 @@
 <div class="switch">
 	<VBox>
 		<h1>Y84 Demo</h1>
+		<h2 style="margin: 0">Instruction Inspector</h2>
 		<Y84Inst {instruction} />
 
 		<HBox>
-			<Picker options={["", ...data.files.map(f => f.name)]} label="Program:" {onpick} />
+			<Picker options={["", ...data.files.map(f => f.name)]} selected="snake" label="Program:" {onpick} />
 		</HBox>
 		<div class="full-code-area">
 			<div class="code-area">
@@ -164,26 +173,89 @@
 				{/if}
 			</VBox>
 			</div>
-			<div class="y84-regs">
-				<Y84Regs {y84} />
-			</div>
 		</div>
 		<div class="lower">
 			<button class="btn btn-xs btn-square no-animation"
 							onclick={() => y84.toggleHalt()}>{y84.isHalted ? '▶ Play' : '⏸ Halt'}</button>
 			<button class="btn btn-xs btn-square no-animation" onclick={() => y84.tick(true)}>⏩ Step</button>
 			<button class="btn btn-xs btn-square no-animation" onclick={async () => await y84.reload()}>↻ Restart</button>
+			<button class="btn btn-xs btn-square no-animation" onclick={async () => await y84.reload(true)}>↻ Restart & Halt</button>
+			<Picker selected="1000hz (default)" options={["100hz", "1000hz (default)", "5000hz"]} onpick={e => {
+				speed = 20000 / parseInt(e.currentTarget.value);
+			}}></Picker>
+			<button class="btn btn-xs btn-square no-animation" onclick={() => showDownloadModal = true}>Export</button>
+			<button class="btn btn-xs btn-square no-animation" onclick={() => showImportModal = true}>Import</button>
 		</div>
-		<span><a href="#diagram">Diagram</a>, <a href="#manual">Manual</a></span>
-		<div style="height: 200px"></div>
+
+		<div class="y84-regs" style="height: 200px" class:hide={!y84.isHalted || !y84.source}>
+			<Y84Regs {y84} />
+		</div>
 		<div style="margin-left: 10%">
 			<h1 id="diagram">Diagram</h1>
 			<img src="/y84.png" alt="y84 CPU Design in Logisim-Evolution" width="80%">
-			<p>This is a screenshot of the CPU as designed in <a href="https://github.com/logisim-evolution/logisim-evolution" target="_blank">Logisim-Evolution</a><br>
-				 You can run this yourself by loading the .circ file found <a href="https://github.com/Slackow/y84/blob/main/y84.circ" target="_blank">here</a>
+			<p>This is a screenshot of the CPU as designed in <a href="https://github.com/logisim-evolution/logisim-evolution" target="_blank">Logisim-Evolution</a>
 			</p>
 		</div>
 		<Y84Faq />
 		<Y84Documentation />
 	</VBox>
 </div>
+
+<Modal bind:showModal={showDownloadModal}>
+	{#snippet header()}
+		<h1>Download Code</h1>
+	{/snippet}
+	<label>File Name: <input bind:value={fileName}></label><br>
+	<label>Download Source (.y): <button disabled={!fileName.trim()} onclick={() => {
+		if (fileName.trim()) {
+			fileName = fileName.trim();
+			downloadData(new Blob([code]), fileName.endsWith('.y') ? fileName : `${fileName}.y`);
+		}
+	}}>Download</button></label><br>
+	<label>Download Logism File(s) (_inst, _data): <button disabled={!fileName.trim()} onclick={async () => {
+		if (fileName.trim()) {
+			fileName = fileName.trim();
+			let { inst, data } = await processAssembly(code);
+			downloadData(new Blob(inst), `${fileName}_inst`);
+			if (hexCodeToShorts(data.join('\n'))?.inst.some(a => a !== 0)) {
+				downloadData(new Blob(data), `${fileName}_data`);
+			}
+		}
+	}}>Download</button></label>
+</Modal>
+
+<Modal bind:showModal={showImportModal}>
+	{#snippet header()}
+		<h1>Import .y file</h1>
+	{/snippet}
+	<form onsubmit={(e: SubmitEvent) => {
+		e.preventDefault();
+
+		if (importFile && importFile.files?.length) {
+			const file = importFile.files[0];
+			const reader = new FileReader();
+
+			reader.onload = (event) => {
+				if (typeof event.target?.result === 'string') {
+					code = (event.target?.result) ?? '';
+					y84.loadCode(code);
+					error = null;
+					showImportModal = false;
+				}
+			};
+
+			reader.onerror = (error) => {
+				console.error('Error reading file:', error);
+			};
+
+			reader.readAsText(file); // Read file as text
+		} else {
+			console.log('No file selected');
+		}
+	}}>
+		<VBox>
+			<label><input required bind:this={importFile} type="file"></label>
+			<label><button type="submit">Import</button></label>
+		</VBox>
+	</form>
+</Modal>

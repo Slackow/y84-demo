@@ -157,27 +157,37 @@ export class Y84Emulator {
 		this.isHalted = !this.isHalted;
 	}
 
-	public load(program: Uint16Array, data?: Int16Array, source?: string, sourceMap?: number[]) {
+	public load(program: Uint16Array, data?: Int16Array, source?: string, sourceMap?: number[], halted = false) {
 		this.reset();
 		this.instMem = program;
 		this.dataMem = data ?? new Int16Array(65536);
 		this.sourceMap = sourceMap ?? [];
 		this.source = source ?? '';
 		console.log('Reset');
-		this.resume();
+		if (!halted) {
+			this.resume();
+		}
+	}
+
+	public async loadCode(code: string) {
+		let { inst, data, sourceMap } = await processAssembly(code);
+		let instShorts = hexCodeToShorts(inst.join('\n'));
+		let dataShorts = data?.length ? Int16Array.from(hexCodeToShorts(data.join('\n'))?.inst ?? []) : undefined;
+		if (instShorts) {
+			this.load(instShorts.inst, dataShorts, code, sourceMap);
+		}
 	}
 
 	public currentInstruction() {
 		return this.instMem[this.PC];
 	}
 
-	public async reload() {
+	public async reload(halted = false) {
 		let {inst, data} = await processAssembly(this.source);
 		let instH = hexCodeToShorts(inst.join("\n"))?.inst;
 		let dataH = hexCodeToShorts(data.join("\n"))?.inst;
-		console.log(instH, dataH);
 		if (instH == null) return;
-		this.load(instH, dataH && new Int16Array(dataH), this.source, this.sourceMap);
+		this.load(instH, dataH && new Int16Array(dataH), this.source, this.sourceMap, halted);
 	}
 
 	public getRegs() {

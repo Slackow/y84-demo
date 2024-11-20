@@ -16,6 +16,7 @@
 	<p>There are definitely some silly design choices, some on purpose (using &lt;&lt; in every single instruction) and
 		others because of my limited knowledge at the time (dedicated instructions for specific external components) but
 		overall I'm still very proud of this project.</p>
+	<p>You can run this yourself in <a href="https://github.com/logisim-evolution/logisim-evolution" target="_blank">Logisim-Evolution</a> by loading the .circ file found <a href="https://github.com/Slackow/y84/blob/main/y84.circ" target="_blank">here</a></p>
 	<h1>What is this demo?</h1>
 	<p>I wanted to learn Svelte5 and SvelteKit and try my hand at making a website from scratch, so I decided to make an emulator of my cpu running in JavaScript.
 	I also figured it would just be a neat project to show off, and much of this page was inspired by Khan Academy's code editor,

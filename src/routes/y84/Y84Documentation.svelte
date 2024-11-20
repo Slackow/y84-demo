@@ -50,7 +50,12 @@
 </ul>
 
 <h3>Arithmetic Operation (00)</h3>
-<p>Determines if the operation is addition, subtraction, multiplication, or division. Multiplication is signed, and division is unsigned.</p>
+	<ul>
+		<li>0000 -> signed addition</li>
+		<li>0001 -> signed addition</li>
+		<li>0010 -> signed multiplication</li>
+		<li>0011 -> <em>unsigned</em> division</li>
+	</ul>
 
 <h3>Storing Immediate / External Interaction (01)</h3>
 <ul>

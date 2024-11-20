@@ -2,6 +2,7 @@
 	let {
 		options,
 		label,
+		selected,
 		onpick,
 	}: {
 		options: string[],
@@ -16,8 +17,7 @@
 	{label ?? ""}
 	<select name={label || "picker"} onchange={onpick}>
 		{#each options as option (option)}
-			<option>{option}</option>
+			<option selected={option === selected}>{option}</option>
 		{/each}
 	</select>
-
 </label>
