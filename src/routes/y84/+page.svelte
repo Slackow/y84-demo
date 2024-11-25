@@ -59,24 +59,16 @@
 </script>
 
 <style>
-
     .switch {
         display: flex;
         justify-content: center;
         align-items: center;
         width: 75%;
-        margin-left: 12.5%;
+				margin: 0 auto;
     }
 
     .right-side {
         width: 420px;
-    }
-
-    .h-200 {
-        height: 200px;
-    }
-
-    .grayout {
     }
 
     .stack {
@@ -104,10 +96,6 @@
         padding: 10px;
     }
 
-    .center {
-        margin: 0 auto;
-    }
-
 		.full-code-area {
 				column-count: 2;
 				display: flex;
@@ -126,13 +114,22 @@
 				}
     }
 
-		.lower {
+		.toolbar {
         padding: 10px;
 				margin-right: 10%;
 		}
 
 		.hide {
 				display: none;
+		}
+
+		.centered {
+				margin: 0 auto;
+		}
+
+		.title {
+				color: lightgray;
+				text-decoration: none;
 		}
 
 </style>
@@ -145,56 +142,58 @@
 
 <div class="switch">
 	<VBox>
-		<h1>Y84 Demo</h1>
-		<h2 style="margin: 0">Instruction Inspector</h2>
-		<Y84Inst {instruction} />
-
-		<HBox>
-			<Picker options={["", ...data.files.map(f => f.name)]} selected="snake" label="Program:" {onpick} />
-		</HBox>
-		<div class="full-code-area">
-			<div class="code-area">
-				<Y84CodeArea {y84} {code} onErr={e => error = e} />
-			</div>
-			<div class="right-side">
-			<VBox>
-				<Y84Console {y84} />
-				{#if error}
-					<div class="stack">
-						<div class="grayout">
-							<Y84Screen {y84} />
+		<div class="centered">
+			<a href="/" class="title"><h1>andrewturcan.com</h1></a>
+			<h1>Y84 Demo</h1>
+			<h2 style="margin: 0">Instruction Inspector</h2>
+			<Y84Inst {instruction} />
+			<HBox>
+				<Picker options={["", ...data.files.map(f => f.name)]} selected="snake" label="Program:" {onpick} />
+			</HBox>
+			<div class="full-code-area">
+				<div class="code-area">
+					<Y84CodeArea {y84} {code} onErr={e => error = e} />
+				</div>
+				<div class="right-side">
+				<VBox>
+					<Y84Console {y84} />
+					{#if error}
+						<div class="stack">
+							<div class="grayout">
+								<Y84Screen {y84} />
+							</div>
+							<div class="err-box">
+								<span class="err-msg">{error.message}, Line: {error.lineNumber}</span>
+							</div>
 						</div>
-						<div class="err-box">
-							<span class="err-msg">{error.message}, Line: {error.lineNumber}</span>
-						</div>
-					</div>
-				{:else}
-					<Y84Screen {y84} />
-				{/if}
-			</VBox>
+					{:else}
+						<Y84Screen {y84} />
+					{/if}
+				</VBox>
+				</div>
 			</div>
-		</div>
-		<div class="lower">
-			<button class="btn btn-xs btn-square no-animation"
-							onclick={() => y84.toggleHalt()}>{y84.isHalted ? '▶ Play' : '⏸ Halt'}</button>
-			<button class="btn btn-xs btn-square no-animation" onclick={() => y84.tick(true)}>⏩ Step</button>
-			<button class="btn btn-xs btn-square no-animation" onclick={async () => await y84.reload()}>↻ Restart</button>
-			<button class="btn btn-xs btn-square no-animation" onclick={async () => await y84.reload(true)}>↻ Restart & Halt</button>
-			<Picker selected="1000hz (default)" options={["100hz", "1000hz (default)", "5000hz"]} onpick={e => {
-				speed = 20000 / parseInt(e.currentTarget.value);
-			}}></Picker>
-			<button class="btn btn-xs btn-square no-animation" onclick={() => showDownloadModal = true}>Export</button>
-			<button class="btn btn-xs btn-square no-animation" onclick={() => showImportModal = true}>Import</button>
-		</div>
+			<div class="toolbar">
+				<button class="btn btn-xs btn-square no-animation"
+								onclick={() => y84.toggleHalt()}>{y84.isHalted ? '▶ Play' : '⏸ Halt'}</button>
+				<button class="btn btn-xs btn-square no-animation" onclick={() => y84.tick(true)}>⏩ Step</button>
+				<button class="btn btn-xs btn-square no-animation" onclick={async () => await y84.reload()}>↻ Restart</button>
+				<button class="btn btn-xs btn-square no-animation" onclick={async () => await y84.reload(true)}>↻ Restart & Halt</button>
+				<Picker selected="1000hz (default)" options={["100hz", "1000hz (default)", "5000hz"]} onpick={e => {
+					speed = 20000 / parseInt(e.currentTarget.value);
+				}}></Picker>
+				<button class="btn btn-xs btn-square no-animation" onclick={() => showDownloadModal = true}>Export</button>
+				<button class="btn btn-xs btn-square no-animation" onclick={() => showImportModal = true}>Import</button>
+			</div>
 
-		<div class="y84-regs" style="height: 200px" class:hide={!y84.isHalted || !y84.source}>
-			<Y84Regs {y84} />
-		</div>
+			<div class="y84-regs" style="height: 200px" class:hide={!y84.isHalted || !y84.source}>
+				<Y84Regs {y84} />
+			</div>
+	</div>
 		<div style="margin-left: 10%">
 			<h1 id="diagram">Diagram</h1>
-			<img src="/y84.png" alt="y84 CPU Design in Logisim-Evolution" width="80%">
-			<p>This is a screenshot of the CPU as designed in <a href="https://github.com/logisim-evolution/logisim-evolution" target="_blank">Logisim-Evolution</a>
-			</p>
+			<img src="/y84.png" id="diagram" alt="y84 CPU Design in Logisim-Evolution" width="80%">
+			<p>This is a screenshot of the CPU as designed in <a href="https://github.com/logisim-evolution/logisim-evolution" target="_blank">Logisim-Evolution</a>,
+				it is running snake</p>
 		</div>
 		<Y84Faq />
 		<Y84Documentation />

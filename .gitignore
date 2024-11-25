@@ -5,6 +5,7 @@ package-lock.json
 .output
 .vercel
 /.svelte-kit
+/.idea
 /build
 
 # OS

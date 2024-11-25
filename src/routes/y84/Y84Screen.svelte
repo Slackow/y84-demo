@@ -15,7 +15,7 @@
 			}
 			ctx.strokeRect(350 - (i % 8) * 50, (i >> 3) * 50, 50, 50);
 		}
-	})
+	});
 
 	function onkeydown(e: KeyboardEvent) {
 		if (e.key.length === 1) {

@@ -1,5 +1,3 @@
-import { read } from '$app/server';
-
 type Divided = {
 	opCode: number;
 	Rt?: number;

@@ -1,6 +1,8 @@
 
 // This is snake, being emulated in my CPU,
 // The code that defines this program is all below
+// You can switch programs using the picker above,
+// or you can make your own!
 // - Controls are WASD to move (click the canvas)
 // - Score is printed in base 10 after death
 // - If you get >=15 points, you get a smiley face
@@ -244,19 +246,3 @@ PC << R2 ?=0 LR // return if reached '\0'
 cout << R2
 R0 << R0 + one
 PC << printMsg // tail recursion
-
-/// # I made snake in assembly language
-///
-/// The snakes movement and position is tracked with
-/// 2 arrays.
-/// One array holds the spaces occupied by the snake
-/// as a list of numbers
-/// The other is an array of length 64, containing
-/// 0 or 1 for if that space is occupied or not.
-/// The first array is a rolling buffer, there's
-/// an additional number stored for the starting position
-/// of the array, this gets incremented on each move,
-/// and the tail is replaced at the same time the new head position is added
-/// the second array simply exists to be a quick lookup
-/// for if the next space is occupied or not.
-/// This ensures that snake length does not impact the speed of the game
