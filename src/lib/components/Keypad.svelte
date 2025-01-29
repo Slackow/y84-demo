@@ -34,7 +34,6 @@
 	.bounds {
 			width: 40px;
 			height: 40px;
-			font-size: 20px;
 	}
 	button.bounds {
 			background: white;
@@ -43,6 +42,11 @@
 			justify-content: center;
 			justify-items: center;
 			text-align: center;
+      font-size: 20px;
+      font-family: monospace;
+			padding: 0;
+			color: darkblue;
+			user-select: none;
 	}
 	button.bounds:active {
 			background: gray;
