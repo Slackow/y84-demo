@@ -39,9 +39,11 @@ export class Y84Emulator {
 	}
 
 	public pressKey(key: number) {
-		console.log('pressed key', key);
 		if (!this.isHalted && this.keyboard.length < 100) {
 			this.keyboard.push(key);
+		}
+		if (this.isHalted && key === 10) {
+			this.reload().then(() => {});
 		}
 	}
 

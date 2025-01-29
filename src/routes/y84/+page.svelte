@@ -4,7 +4,6 @@
 	import Y84Screen from './Y84Screen.svelte';
 	import Picker from '$lib/components/Picker.svelte';
 	import Y84Console from './Y84Console.svelte';
-	import HBox from '$lib/components/HBox.svelte';
 	import VBox from '$lib/components/VBox.svelte';
 	import Y84CodeArea from './Y84CodeArea.svelte';
 	import Y84Inst from './Y84Inst.svelte';
@@ -101,6 +100,10 @@
 				display: flex;
 		}
 
+    .picker {
+        padding-left: 705px;
+    }
+
     @media all and (max-width: 1230px) {
 				.full-code-area {
 						column-count: 1;
@@ -111,6 +114,9 @@
 				}
 				.y84-regs {
 						display: none;
+				}
+				.picker {
+						padding-left: 0;
 				}
     }
 
@@ -147,9 +153,10 @@
 			<h1>Y84 Demo</h1>
 			<h2 style="margin: 0">Instruction Inspector</h2>
 			<Y84Inst {instruction} />
-			<HBox>
-				<Picker options={["", ...data.files.map(f => f.name)]} selected="snake" label="Program:" {onpick} />
-			</HBox>
+			<div>
+				<span class="picker">Program: </span>
+				<Picker options={["", ...data.files.map(f => f.name)]} selected="snake" {onpick} />
+			</div>
 			<div class="full-code-area">
 				<div class="code-area">
 					<Y84CodeArea {y84} {code} onErr={e => error = e} />

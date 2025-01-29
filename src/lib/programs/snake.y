@@ -246,3 +246,6 @@ PC << R2 ?=0 LR // return if reached '\0'
 cout << R2
 R0 << R0 + one
 PC << printMsg // tail recursion
+
+
+//// {"keys":[["", "w", ""], ["a", "s", "d"]]}
