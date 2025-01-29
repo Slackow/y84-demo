@@ -47,6 +47,7 @@
 	}
 	.outer {
 			display: grid;
+      touch-action: manipulation;
 	}
 	.keypad {
 			grid-area: 1 / 1;

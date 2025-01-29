@@ -17,7 +17,7 @@
 			{#each row as key}
 				<div class="bounds">
 					{#if key}
-						<button class="bounds" tabindex="0" onclick={() => action(key)} {onkeydown}>{key.toUpperCase()}</button>
+						<button class="bounds" tabindex="0" onclick={() => action(key)} {onkeydown}>{key.toUpperCase().trim()}</button>
 					{/if}
 				</div>
 			{/each}
