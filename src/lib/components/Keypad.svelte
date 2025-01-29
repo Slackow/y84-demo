@@ -17,7 +17,7 @@
 			{#each row as key}
 				<div class="bounds">
 					{#if key}
-						<button class="bounds" onclick={() => action(key)} {onkeydown}>{key.toUpperCase()}</button>
+						<button class="bounds" tabindex="0" onclick={() => action(key)} {onkeydown}>{key.toUpperCase()}</button>
 					{/if}
 				</div>
 			{/each}
@@ -29,15 +29,20 @@
 	.outer {
 			display: flex;
       flex-direction: column;
-      opacity: 85%;
+      opacity: 0.95;
 	}
 	.bounds {
 			width: 40px;
 			height: 40px;
 			font-size: 20px;
 	}
-	.outer:hover {
-			opacity: 100%;
+	button.bounds {
+			background: white;
+			border-radius: 5px;
+			border: black 2px solid;
+	}
+	button.bounds:active {
+			background: gray;
 	}
 	.row-bounds {
 			display: flex;
