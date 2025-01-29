@@ -62,7 +62,7 @@
 	<h3>Arithmetic Operation (00)</h3>
 	<ul>
 		<li>0000 -> signed addition</li>
-		<li>0001 -> signed addition</li>
+		<li>0001 -> signed subtraction</li>
 		<li>0010 -> signed multiplication</li>
 		<li>0011 -> <em>unsigned</em> division</li>
 	</ul>
@@ -194,7 +194,7 @@ PC &lt;&lt; LR // return</code></pre>
 	<h3>More Technical Details</h3>
 	<p>The game uses two "arrays" of length 64, one of dynamic size used as a ring buffer that stores the positions of each node of the snake, and one that allows for fast checking of if a spot is dangerous or not.</p>
 	<p>The snake is modeled as a queue. When it moves to a new spot, it flips the spot at the tail and then flips the new spot at the head, replacing the value where its tail was stored with the new head value. It also updates the collision field as needed.</p>
-	<p>Capturing the apple may take more time because the game must shift over a bunch of the snake's values by one. This depends on the time at which you capture the apple. It can be anywhere from 1 move to <em>n</em> moves (where <em>n</em> is the length). On average, you move <em>n</em>/2 data when collecting the apple. Regular moves, however, shouldn't take any longer if you're length 1 or length 60.</p>
+	<p>Capturing the apple may take more time because the game must shift over a bunch of the snake's values by one. This depends on the time at which you capture the apple. It can be anywhere from 1 move to <em>n</em> moves (where <em>n</em> is the length). On average, you move <em>n</em>/2 elements when collecting the apple. Regular (non-capturing) moves, however, shouldn't take any longer if you're length 1 or length 60.</p>
 
 	<h3>Example Program: Calculator</h3>
 	<img alt="Calculator Program" src="/calc.png">
