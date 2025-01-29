@@ -40,6 +40,9 @@
 			background: white;
 			border-radius: 5px;
 			border: black 2px solid;
+			justify-content: center;
+			justify-items: center;
+			text-align: center;
 	}
 	button.bounds:active {
 			background: gray;

@@ -111,6 +111,7 @@
 				}
 				.code-area {
 						width: 400px;
+						padding-top: 30px;
 				}
 				.y84-regs {
 						display: none;
