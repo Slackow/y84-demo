@@ -153,6 +153,7 @@
 			<a href="/" class="title"><h1>andrewturcan.com</h1></a>
 			<h1>Y84 Demo</h1>
 			<h2 style="margin: 0">Instruction Inspector</h2>
+			<p style="margin: 2px">compare the binary encoding of an instruction to its written form</p>
 			<Y84Inst {instruction} />
 			<div>
 				<span class="picker">Program: </span>

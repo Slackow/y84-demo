@@ -23,8 +23,7 @@
 
 <h1>andrewturcan.com</h1>
 
-<p>Hi, my name is Andrew, I'm a CS major at Stevens Institute of Technology,<br> graduating May 2025 with my Bachelor's and May 2026 for my Master's.</p>
-
+<p>Hi, my name is Andrew. I’m a Computer Science graduate from Stevens Institute of Technology (Class of 2025), currently pursuing my Master’s degree, expected May 2026.</p>
 <h2>Projects</h2>
 
 <ul>

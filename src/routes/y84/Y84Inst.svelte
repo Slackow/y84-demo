@@ -28,7 +28,7 @@
         align-items: center;
         width: 80px;
         height: 25px;
-        outline: red solid 3px;
+        outline: maroon solid 3px;
         border-radius: 2px;
         outline-offset: -4px;
         text-align: center;
