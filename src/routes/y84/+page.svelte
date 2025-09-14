@@ -30,6 +30,7 @@
 	$effect(() => {
 		let id = setInterval(() => {
 			if (error !== null) return;
+			// call tick 20 times (I promise)
 			y84.tick();y84.tick();y84.tick();y84.tick();y84.tick();
 			y84.tick();y84.tick();y84.tick();y84.tick();y84.tick();
 			y84.tick();y84.tick();y84.tick();y84.tick();y84.tick();
@@ -187,7 +188,7 @@
 				<button class="btn btn-xs btn-square no-animation" onclick={() => y84.tick(true)}>⏩ Step</button>
 				<button class="btn btn-xs btn-square no-animation" onclick={async () => await y84.reload()}>↻ Restart</button>
 				<button class="btn btn-xs btn-square no-animation" onclick={async () => await y84.reload(true)}>↻ Restart & Halt</button>
-				<Picker selected="1000hz (default)" options={["100hz", "1000hz (default)", "5000hz"]} onpick={e => {
+				<Picker selected="1000hz (default)" options={["100hz", "500hz", "1000hz (default)", "5000hz"]} onpick={e => {
 					speed = 20000 / parseInt(e.currentTarget.value);
 				}}></Picker>
 				<button class="btn btn-xs btn-square no-animation" onclick={() => showDownloadModal = true}>Export</button>
@@ -220,7 +221,7 @@
 			downloadData(new Blob([code]), fileName.endsWith('.y') ? fileName : `${fileName}.y`);
 		}
 	}}>Download</button></label><br>
-	<label>Download Logism File(s) (_inst, _data): <button disabled={!fileName.trim()} onclick={async () => {
+	<label>Download Logisim File(s) (_inst, _data): <button disabled={!fileName.trim()} onclick={async () => {
 		if (fileName.trim()) {
 			fileName = fileName.trim();
 			let { inst, data } = await processAssembly(code);

@@ -23,12 +23,16 @@
 
 <h1>andrewturcan.com</h1>
 
-<p>Hi, my name is Andrew. I’m a Computer Science graduate from Stevens Institute of Technology (Class of 2025), currently pursuing my Master’s degree, expected May 2026.</p>
+<div style="display: flex;width: 50%; justify-self: center; background: #4075a6; padding: 30px; border-radius: 38px">
+	<img src="/prof.jpeg" alt="Me, Andrew Turcan" style="width: 200px; border-radius: 38px;border: red solid 3px; margin-right: 20px">
+	<p style="border-radius: 38px;padding: 30px;background: #dedeff;color: black">Hi, my name is Andrew. I’m a Computer Science graduate from Stevens Institute of Technology (Class of 2025), currently pursuing my Master’s degree, expected May 2026.</p>
+</div>
+
 <h2>Projects</h2>
 
 <ul>
 	<li><strong>y84</strong> - Virtual 16-bit CPU design
-		<br>Interactive Demo: <a href="https://andrewturcan.com/y84" target="_blank">andrewturcan.com/y84</a>
+		<br>Interactive Demo: <a href="/y84" target="_blank">andrewturcan.com/y84</a>
 		<br>Features: Basic arithmetic, conditional jumping, memory operations, and interactive components (keyboard, screen, terminal).
 		<br>Uses: SvelteKit, Python (Assembler), Logisim
 	</li>
@@ -40,9 +44,9 @@
 		<br>Features: Progress tracker, livestream overlay, used by 50+ speedrunners.
 		<br>Tech: Swift, SwiftUI
 	</li>
-	<li><strong>Functional MCFunctions</strong> - Programming/templating language
-		<br>Features: Type system, code templating, designed for Minecraft scripting.
-		<br>Tech: Java, ANTLR
+	<li><strong>PackScript</strong> - Programming/templating language
+		<br>Features: Python based code templating, designed for Minecraft scripting, and accompanied with a VSCode extension.
+		<br>Tech: Python, JavaScript, VSCode
 	</li>
 </ul>
 
