@@ -1,25 +1,6 @@
 <script>
-	import { onMount } from 'svelte';
-	import Github from './github.svelte';
-	import Linkedin from './linkedin.svelte';
-	import Email from './email.svelte';
-
-	let gh = $state();
-	let canvas = $state();
-	let x = 0;
-	let speed = 5;
-	onMount(() => {
-		setTimeout(() => gh.href = 'https://github.com/Sl' + 'ac' + 'kow', 500);
-		let id = setInterval(() => {
-			let ctx = canvas.getContext('2d');
-			ctx.clearRect(0, 0, 320, 20);
-			ctx.fillStyle = 'rgb(255 255 255)';
-			speed = x >= 300 ? -5 : x <= 0 ? 5 : speed;
-			x += speed;
-			ctx.fillRect(x, 0, 20, 20);
-		}, 20);
-		return () => clearInterval(id);
-	});
+	import YellowVsOrange from '$lib/components/misc/YellowVsOrange.svelte';
+	import Links from './links.svelte';
 </script>
 
 
@@ -30,6 +11,8 @@
 <!--	<p style="border-radius: 38px;padding: 30px;background: #dedeff;color: black">Hi, my name is Andrew. I’m a Computer Science graduate from Stevens Institute of Technology (Class of 2025), currently pursuing my Master’s degree, expected May 2026.</p>-->
 <!--</div>-->
 
+<p>Hi, my name is Andrew. I’m a Computer Science graduate from Stevens Institute of Technology (Class of 2025), currently pursuing my Master’s degree, expected May 2026.</p>
+<p>This page serves as a resume/demo of projects I have worked on and my experience in software development.</p>
 <h2>Projects</h2>
 
 <ul>
@@ -40,16 +23,16 @@
 		<br>Uses: SvelteKit, Python (Assembler), Logisim
 	</li>
 	<li><strong>DanuBot</strong> - Versatile Discord bot
-		<br>Capabilities: Plays music, sends alerts, integrates ChatGPT for responses.
-		<br>Tech: Java, Discord4j
+		<br>Features: Plays music, sends alerts, integrates ChatGPT for responses.
+		<br>Tech: Java, Discord4j, ChatGPT
 	</li>
-	<li><strong>SwiftAA</strong> - Speedrunning assistant for Minecraft
+	<li><strong>SwiftAA</strong> - Speedrunning assistant for Minecraft, in the form of a macOS app.
 		<br>Features: Progress tracker, livestream overlay, used by 50+ speedrunners.
 		<br>Tech: Swift, SwiftUI
 	</li>
 	<li><strong>PackScript</strong> - Programming/templating language
 		<br>Features: Python based code templating, designed for Minecraft scripting, and accompanied with a VSCode
-		extension.
+		extension and Minecraft mod.
 		<br>Tech: Python, JavaScript, VSCode
 	</li>
 </ul>
@@ -72,24 +55,21 @@
 <h2>Skills</h2>
 
 <p><strong>Languages:</strong> Java, JavaScript, Swift, C, C++, Python, PostgreSQL, HTML, CSS, OCaml, Kotlin</p>
-<p><strong>Software:</strong> Git, ReactJS, NextJS, VSCode, Gradle, IntelliJ, NodeJS, ANTLR, Svelte, SvelteKit
-</p>
+<p><strong>Software:</strong> Git, ReactJS, NextJS, VSCode, Gradle, IntelliJ, NodeJS, ANTLR, Svelte, SvelteKit</p>
 
 <h2>Education</h2>
 
 <p><strong>Stevens Institute of Technology</strong>, Hoboken, NJ</p>
 <p>Master of Science in Computer Science (Expected May 2026)</p>
-<p>Bachelor of Science in Computer Science (Expected May 2025)</p>
-<p><strong>Relevant Courses:</strong> Computer Architecture, Compilers, Systems Programming, Web Programming, System
-	Administration,<br> Theory of Computation, Discrete Math, Algorithms, Data Structures</p>
-
-<p>You can also just watch the square go side to side if you want to.</p>
-<canvas bind:this={canvas} width="320" height="20"></canvas>
-
-<div style="display: flex; gap: 10px">
-	<Github link="https://www.github.com/Slackow" />
-	<Linkedin link="https://www.linkedin.com/in/andrew-turcan/" />
-	<Email link="mailto:aturcan@stevens.edu" />
-</div>
+<p>Bachelor of Science in Computer Science (Received May 2025)</p>
+<p><strong>Relevant Courses:</strong> Web Programming, Unix Programming, Artificial Intelligence, AGILE, Computer Architecture,
+	Compiler Design,<br>System Administration, Systems Programming, Operating Systems, Theory of Computation,
+	Discrete Math, Algorithms, Data Structures</p>
+<h2>Yellow vs Orange</h2>
+<p>Here's a neat little simulation I wrote up (it goes on forever)</p>
+<YellowVsOrange />
+<br>
+<p>Make sure you also checkout my <a href="/y84" target="_blank">y84 Demo</a>!</p>
+<Links />
 
 <svelte:head><title>andrewturcan.com</title></svelte:head>

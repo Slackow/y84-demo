@@ -15,6 +15,7 @@
 	import Y84Faq from './Y84Faq.svelte';
 	import { downloadData } from '$lib';
 	import Modal from '$lib/components/Modal.svelte';
+	import Links from '../links.svelte';
 
 	let { data } = $props();
 
@@ -207,6 +208,9 @@
 		</div>
 		<Y84Faq />
 		<Y84Documentation />
+		<div style="padding: 10px;width: 80%; margin-left: 10%;">
+			<Links />
+		</div>
 	</VBox>
 </div>
 
